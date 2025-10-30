@@ -51,7 +51,7 @@ def get_range(
     min_angle: float = -3.0 * np.pi / 4.0,
     max_angle: float = 3.0 * np.pi / 4.0,
 ):
-    angle_increment = (max_angle - min_angle) / lidar_range_array.size
+    angle_increment = (max_angle - min_angle) / (lidar_range_array.size - 1)
     index = round((angle - min_angle) / angle_increment)
     if lidar_range_array is not None and index < lidar_range_array.size:
         return lidar_range_array[index]
@@ -92,10 +92,8 @@ def connect(sid, environ):
 @sio.on("Bridge")
 def bridge(sid, data):
     if data:
-        # Vehicle data
         f1tenth_1.parse_data(data)
 
-        # Vehicle control
         f1tenth_1.throttle_command = 0.2  # [-1, 1]
 
         f1tenth_1.steering_command = steering_pid.update(
